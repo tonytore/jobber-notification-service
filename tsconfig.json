@@ -5,22 +5,37 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
-    "jsx": "react-jsx",
     "lib": [
+      "dom",
       "esnext"
     ],
     "module": "esnext",
+    "baseUrl": "./",
     "moduleResolution": "node",
     "noEmitOnError": true,
-    "outDir": "build",
-    "rootDir": "src",
+    "outDir": "./build",
+    "rootDir": ".",
     "sourceMap": true,
     "strict": true,
     "target": "es2021",
     "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true,
     "pretty": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths"
+      },
+      {
+        "transform": "typescript-transform-paths",
+        "afterDeclarations": true
+      }
+    ],
+    "paths": {
+      "@notification/*": [
+        "src/*"
+      ]
+    }
   },
   "include": [
     "src"
