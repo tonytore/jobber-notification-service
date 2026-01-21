@@ -5,7 +5,8 @@ import appConfig from '@notification/config';
 import { Logger } from 'winston';
 import { Application } from 'express';
 import { healthRoutes } from '@notification/routes';
-import { checkConnection } from '@notification/elasticSearch';
+import { checkConnection } from '@notification/loki';
+import { createConnection } from '@notification/queues/connection';
 
 const SERVER_PORT = process.env.PORT || 4001;
 
@@ -25,7 +26,9 @@ export function start(app: Application): void {
   startLoki();
 }
 
-async function startQueues(): Promise<void> {}
+async function startQueues(): Promise<void> {
+  await createConnection()
+}
 
 function startLoki(): void {
   checkConnection();
