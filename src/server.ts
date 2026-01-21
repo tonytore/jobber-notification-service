@@ -1,9 +1,10 @@
 import 'express-async-errors'
 import http from 'http';
 import { winstonLogger } from '@tonytore/jobber-shared';
-import appConfig from './config';
+import appConfig from '@notification/config';
 import { Logger } from 'winston';
 import { Application } from 'express';
+import { healthRoutes } from '@notification/routes';
 
 
 const SERVER_PORT = process.env.PORT || 4001;
@@ -19,6 +20,7 @@ const logger:Logger = winstonLogger(options);
 
 export function start(app: Application): void {
     startServer(app);
+    app.use("", healthRoutes);
     startQueues();
     startLoki();
 
