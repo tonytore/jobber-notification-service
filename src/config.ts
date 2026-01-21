@@ -1,6 +1,4 @@
-import dotenv from 'dotenv';
-
-dotenv.config({});
+import 'dotenv/config';
 
 class Config {
   public ENABLE_APM: string | undefined;
