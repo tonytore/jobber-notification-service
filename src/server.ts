@@ -1,46 +1,44 @@
-import 'express-async-errors'
+import 'express-async-errors';
 import http from 'http';
 import { winstonLogger } from '@tonytore/jobber-shared';
 import appConfig from '@notification/config';
 import { Logger } from 'winston';
 import { Application } from 'express';
 import { healthRoutes } from '@notification/routes';
-
+import { checkConnection } from '@notification/elasticSearch';
 
 const SERVER_PORT = process.env.PORT || 4001;
 
 const options = {
-    serviceName: "NotificationServer",
-    level: 'debug',
-    lokiUrl: appConfig.LOKI_URL,
-    enableLoki: true
-}
+  serviceName: 'NotificationServer',
+  level: 'debug',
+  lokiUrl: appConfig.LOKI_URL,
+  enableLoki: true
+};
 
-const logger:Logger = winstonLogger(options);
+const logger: Logger = winstonLogger(options);
 
 export function start(app: Application): void {
-    startServer(app);
-    app.use("", healthRoutes);
-    startQueues();
-    startLoki();
-
+  startServer(app);
+  app.use('', healthRoutes);
+  startQueues();
+  startLoki();
 }
 
-async function startQueues(): Promise<void> {
-}
+async function startQueues(): Promise<void> {}
 
 function startLoki(): void {
+  checkConnection();
 }
 
-function startServer(app:Application): void {
-    try {
-        const httpServer:http.Server = http.createServer(app);
-        logger.info(`Worker with process id og ${process.pid} on notification server has started`);
-        httpServer.listen(SERVER_PORT, () => {
-            logger.info(`Notification server listening on port ${SERVER_PORT}`);
-        });
-    } catch (error) {
-        logger.log('error', 'NotificationService startServer()', error);
-        
-    }
+function startServer(app: Application): void {
+  try {
+    const httpServer: http.Server = http.createServer(app);
+    logger.info(`Worker with process id og ${process.pid} on notification server has started`);
+    httpServer.listen(SERVER_PORT, () => {
+      logger.info(`Notification server listening on port ${SERVER_PORT}`);
+    });
+  } catch (error) {
+    logger.log('error', 'NotificationService startServer()', error);
+  }
 }

@@ -32,6 +32,7 @@
   "dependencies": {
     "@tonytore/jobber-shared": "^0.0.19",
     "amqplib": "^0.10.9",
+    "axios": "^1.13.2",
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "email-templates": "^13.0.1",
