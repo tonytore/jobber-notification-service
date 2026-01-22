@@ -10,7 +10,7 @@ import { createConnection } from '@notification/queues/connection';
 import { Channel } from 'amqplib';
 import { consumeAuthEmailMessage, consumeOrderEmailMessage } from '@notification/queues/email.consumer';
 
-const SERVER_PORT = process.env.PORT || 4002;
+const SERVER_PORT = appConfig.PORT;
 
 const options = {
   serviceName: 'NotificationServer',

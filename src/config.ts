@@ -1,6 +1,7 @@
 import 'dotenv/config';
 
 class Config {
+  public PORT = process.env.PORT || 5002;
   public ENABLE_APM: string | undefined;
   public NODE_ENV: string | undefined;
   public CLIENT_URL: string | undefined;
