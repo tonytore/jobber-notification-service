@@ -43,7 +43,6 @@ export const emailTemplates = async(template: string, receiver: string, locals: 
         }
       }
     });
-
     await email.send({
       template : path.join(__dirname, '..', 'src/emails', template),
       message: {
@@ -55,3 +54,5 @@ export const emailTemplates = async(template: string, receiver: string, locals: 
     logger.log('error', 'NotificationService emailTemplates() method', error);
   }
 };
+
+

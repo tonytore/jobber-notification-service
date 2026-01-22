@@ -1,6 +1,6 @@
 import 'express-async-errors';
 import http from 'http';
-import { winstonLogger } from '@tonytore/jobber-shared';
+import { IOrderMessage, winstonLogger } from '@tonytore/jobber-shared';
 import appConfig from '@notification/config';
 import { Logger } from 'winston';
 import { Application } from 'express';
@@ -8,9 +8,9 @@ import { healthRoutes } from '@notification/routes';
 import { checkConnection } from '@notification/loki';
 import { createConnection } from '@notification/queues/connection';
 import { Channel } from 'amqplib';
-import {consumeAuthEmailMessage , consumeOrderEmailMessage} from './queues/email.consumer';
+import { consumeAuthEmailMessage, consumeOrderEmailMessage } from '@notification/queues/email.consumer';
 
-const SERVER_PORT = process.env.PORT || 4001;
+const SERVER_PORT = process.env.PORT || 4002;
 
 const options = {
   serviceName: 'NotificationServer',
@@ -29,24 +29,24 @@ export function start(app: Application): void {
 }
 
 async function startQueues(): Promise<void> {
-  const emailChannel:Channel = await createConnection() as Channel
+  const emailChannel: Channel = (await createConnection()) as Channel;
   await consumeAuthEmailMessage(emailChannel);
   await consumeOrderEmailMessage(emailChannel);
 
-  await emailChannel.assertExchange('auth-email-notification', 'direct');
-  const message = JSON.stringify({
-    email: 'tonytore@example.com',
-    message: 'Hi, this is a test message',
-    service: 'auth email notification'
-  })
-  await emailChannel.publish('auth-email-notification', 'auth-email', Buffer.from(message));
-
+  const messageDetails: IOrderMessage = {
+    receiverEmail: `${appConfig.SENDER_EMAIL}`,
+    template: 'orderDelivered',
+    sellerId: '123',
+    buyerId: '333',
+    username: 'tonytore',
+    title: 'test',
+    description: 'test',
+    deliveryDays: 'test',
+    amount: 'test',
+    orderId: 'test'
+  };
   await emailChannel.assertExchange('order-email-notification', 'direct');
-  const message2 = JSON.stringify({
-    email: 'tonytore@example.com',
-    message: 'Hi, this is a test message',
-    service: 'order email notification'
-  })
+  const message2 = JSON.stringify(messageDetails);
   await emailChannel.publish('order-email-notification', 'order-email', Buffer.from(message2));
 }
 
