@@ -1,3 +1,4 @@
 import { Channel } from 'amqplib';
 declare function consumeAuthEmailMessage(channel: Channel): Promise<void>;
-export default consumeAuthEmailMessage;
+declare function consumeOrderEmailMessage(channel: Channel): Promise<void>;
+export { consumeAuthEmailMessage, consumeOrderEmailMessage };

@@ -27,44 +27,50 @@ async function consumeAuthEmailMessage(channel: Channel): Promise<void> {
     });
 
     await channel.bindQueue(jobberQueue.queue, exchangName, routingQueue);
-    await channel.consume(jobberQueue.queue, async (message: ConsumeMessage | null) => {
-      if (message) {
-        const { receiverEmail, username, verifyLink, resetLink, template} = JSON.parse(message.content.toString());
-        const locals: IEmailLocals = {
-          appLink: `${appConfig.SENDER_EMAIL}`,
-          appIcon: 'https://ibb.co/wr75808w',
-          username,
-          verifyLink,
-          resetLink
+    await channel.consume(
+      jobberQueue.queue,
+      async (message: ConsumeMessage | null) => {
+        if (message) {
+          const { receiverEmail, username, verifyLink, resetLink, template } = JSON.parse(message.content.toString());
+          const locals: IEmailLocals = {
+            appLink: `${appConfig.SENDER_EMAIL}`,
+            appIcon: 'https://ibb.co/wr75808w',
+            username,
+            verifyLink,
+            resetLink
+          };
+          await sendEmail(template, receiverEmail, locals);
+          logger.info(`Received message: ${message!.content.toString()}`);
+          channel.ack(message!);
         }
-        await sendEmail(template, receiverEmail, locals);
-        logger.info(`Received message: ${message!.content.toString()}`);
-        channel.ack(message!);
-      }
-    }, { noAck: false });
+      },
+      { noAck: false }
+    );
   } catch (error) {
     logger.log('error', 'NotificationService EmailConsumer consumeAuthEmailMessage() method error', error);
   }
 }
 
 async function consumeOrderEmailMessage(channel: Channel): Promise<void> {
-    try {
-      if (!channel) {
-        channel = (await createConnection()) as Channel;
-      }
-      const exchangName = 'order-email-notification';
-      const routingQueue = 'order-email';
-      const queueName = 'order-email-queue';
-      await channel.assertExchange(exchangName, 'direct');
-      const jobberQueue = await channel.assertQueue(queueName, {
-        durable: true,
-        autoDelete: false
-      });
-  
-      await channel.bindQueue(jobberQueue.queue, exchangName, routingQueue);
-      await channel.consume(jobberQueue.queue, async (msg: ConsumeMessage | null) => {
+  try {
+    if (!channel) {
+      channel = (await createConnection()) as Channel;
+    }
+    const exchangName = 'order-email-notification';
+    const routingQueue = 'order-email';
+    const queueName = 'order-email-queue';
+    await channel.assertExchange(exchangName, 'direct');
+    const jobberQueue = await channel.assertQueue(queueName, {
+      durable: true,
+      autoDelete: false
+    });
+
+    await channel.bindQueue(jobberQueue.queue, exchangName, routingQueue);
+    await channel.consume(
+      jobberQueue.queue,
+      async (msg: ConsumeMessage | null) => {
         if (msg) {
-          const { 
+          const {
             receiverEmail,
             username,
             template,
@@ -115,22 +121,24 @@ async function consumeOrderEmailMessage(channel: Channel): Promise<void> {
             message,
             serviceFee,
             total
-          }
+          };
           // send emails
-          if(template === 'orderPlaced') {
-            await sendEmail("orderPlaced", receiverEmail, locals);
-            await sendEmail("orderReceipt", receiverEmail, locals);
-          }else {
+          if (template === 'orderPlaced') {
+            await sendEmail('orderPlaced', receiverEmail, locals);
+            await sendEmail('orderReceipt', receiverEmail, locals);
+          } else {
             await sendEmail(template, receiverEmail, locals);
           }
           // acknoledge
           logger.info(`Received message: ${msg!.content.toString()}`);
           channel.ack(msg!);
         }
-      }, { noAck: false })
-    } catch (error) {
-      logger.log('error', 'NotificationService EmailConsumer consumeOrderEmailMessage() method error', error);
-    }
+      },
+      { noAck: false }
+    );
+  } catch (error) {
+    logger.log('error', 'NotificationService EmailConsumer consumeOrderEmailMessage() method error', error);
   }
+}
 
-export {consumeAuthEmailMessage, consumeOrderEmailMessage};
+export { consumeAuthEmailMessage, consumeOrderEmailMessage };

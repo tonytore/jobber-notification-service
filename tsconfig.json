@@ -6,10 +6,7 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
-    "lib": [
-      "dom",
-      "ES2015"
-    ],
+    "lib": ["dom", "ES2015"],
     "module": "commonjs",
     "baseUrl": "./",
     "moduleResolution": "node",
@@ -33,16 +30,9 @@
       }
     ],
     "paths": {
-      "@notification/*": [
-        "src/*"
-      ]
+      "@notification/*": ["src/*"]
     }
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "build"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "build"]
 }

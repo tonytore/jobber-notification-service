@@ -12,7 +12,7 @@ const logger: Logger = winstonLogger({
   enableLoki: true
 });
 
-export const emailTemplates = async(template: string, receiver: string, locals: IEmailLocals) => {
+export const emailTemplates = async (template: string, receiver: string, locals: IEmailLocals) => {
   try {
     const smtpTransporter: Transporter = nodemailer.createTransport({
       host: 'smtp.ethereal.email',
@@ -44,15 +44,13 @@ export const emailTemplates = async(template: string, receiver: string, locals: 
       }
     });
     await email.send({
-      template : path.join(__dirname, '..', 'src/emails', template),
+      template: path.join(__dirname, '..', 'src/emails', template),
       message: {
         to: receiver
       },
       locals
-    })
+    });
   } catch (error) {
     logger.log('error', 'NotificationService emailTemplates() method', error);
   }
 };
-
-

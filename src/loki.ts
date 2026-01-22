@@ -27,8 +27,8 @@ export async function checkConnection(): Promise<void> {
       }
 
       log.warn(`Loki not ready yet (attempt ${attempt}/${maxAttempts}): ${response.data.trim() || response.statusText}`);
-    } catch (error: any) {
-      log.error(`Loki readiness check failed (attempt ${attempt}/${maxAttempts}): ${error.message}`);
+    } catch (error) {
+      log.error(`Loki readiness check failed (attempt ${attempt}/${maxAttempts}): ${error}`);
     }
 
     await new Promise((resolve) => setTimeout(resolve, delayMs));
