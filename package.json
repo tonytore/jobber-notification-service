@@ -38,7 +38,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@tonytore/jobber-shared": "^0.0.19",
+    "@tonytore/jobber-shared": "^0.0.21",
     "amqplib": "^0.10.9",
     "axios": "^1.13.2",
     "dotenv": "^17.2.3",
